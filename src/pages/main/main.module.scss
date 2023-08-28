@@ -1,0 +1,11 @@
+.vending {
+  display: flex;
+
+  :nth-child(1) {
+    flex: 4;
+  }
+
+  :nth-child(2) {
+    flex: 1;
+  }
+}
