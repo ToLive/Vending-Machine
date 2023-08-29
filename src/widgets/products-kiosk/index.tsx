@@ -1,15 +1,16 @@
 import { FC } from 'react';
 import { IProductProps } from '@features/product/types';
 import Product from '@features/product';
+import classes from './kiosk.module.scss';
 
 const ProductsKiosk: FC<IProductProps[]> = (products) => {
   return (
-    <div>
+    <section id="kiosk" className={classes.kiosk}>
       {products &&
         Object.values(products).map((product, idx) => {
           return <Product key={`${product.name}${idx}`} {...product} />;
         })}
-    </div>
+    </section>
   );
 };
 

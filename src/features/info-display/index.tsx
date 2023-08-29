@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import { IInfoDisplayProps } from './types';
+import classes from './infodisplay.module.scss';
 
 const InfoDisplay: FC<IInfoDisplayProps> = ({ text, additionalClasses }) => {
   return (
-    <div>
-      <span className={additionalClasses}>{text}</span>
+    <div className={classes.display}>
+      <span className={`${classes.text} ${additionalClasses}`}>{text}</span>
     </div>
   );
 };

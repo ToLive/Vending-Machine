@@ -1,0 +1,15 @@
+.display {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: black;
+  color: limegreen;
+  height: 2em;
+  border-radius: 5px;
+  padding: 0.5em;
+
+  .text {
+    height: 100%;
+    line-height: 170%;
+  }
+}
