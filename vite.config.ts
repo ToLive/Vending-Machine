@@ -11,5 +11,9 @@ export default defineConfig({
       '@widgets': path.resolve(__dirname, './src/widgets'),
     },
   },
+  server: {
+    host: 'localhost',
+    port: 3500,
+  },
   plugins: [react()],
 });
