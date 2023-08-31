@@ -1,7 +1,11 @@
-export const calcChange = (money, price) => {
+interface IMoneyChange {
+  [key: string | number]: number;
+}
+
+export const calcChange = (money: number, price: number): IMoneyChange => {
   const availiableChange = [10, 5, 2, 1];
 
-  const change = availiableChange.reduce(
+  const change: IMoneyChange = availiableChange.reduce(
     (acc, val) => ({
       ...acc,
       [val]: Math.floor(acc.rest / val),

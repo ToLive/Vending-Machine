@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import InfoDisplay from '../../features/info-display/index';
 import UserInput from '../../features/user-input';
 import classes from './panel.module.scss';
@@ -14,7 +14,6 @@ import { calcChange } from './lib/helpers';
 
 const ControlPanel = () => {
   const dispatch = useAppDispatch();
-  const moneyDisplay = useRef(null);
   const insertedMoney = useAppSelector(getInsertedMoney);
   const products = Object.values(useAppSelector(getProducts));
 
@@ -25,7 +24,7 @@ const ControlPanel = () => {
   const handleMoneyInsert = (e: FormEvent) => {
     e.preventDefault();
 
-    const money = Number(e.target.money.value);
+    const money = Number((e.target as HTMLFormElement).money.value);
 
     const checkInput = (sum: number) => acceptedBanknotes.includes(sum);
 
@@ -58,7 +57,7 @@ const ControlPanel = () => {
   const handleProductSelect = (e: FormEvent) => {
     e.preventDefault();
 
-    const productNum = Number(e.target.product.value);
+    const productNum = Number((e.target as HTMLFormElement).value);
 
     console.log(productNum);
 
@@ -91,7 +90,7 @@ const ControlPanel = () => {
 
   return (
     <section id="control-panel" className={classes.panel}>
-      <InfoDisplay ref={moneyDisplay} text={moneyInfo} />
+      <InfoDisplay text={moneyInfo} />
       <UserInput
         type="input"
         name="money"
