@@ -5,4 +5,5 @@ export interface IUserInput {
   placeholder: string;
   handler?: FormEventHandler<HTMLFormElement>;
   name: string;
+  disabled: boolean;
 }

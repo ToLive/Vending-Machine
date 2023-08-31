@@ -8,6 +8,7 @@ const UserInput: FC<IUserInput> = (props) => {
       <input
         type={props.type}
         name={props.name}
+        disabled={props.disabled}
         className={classes.userinput}
         placeholder={props.placeholder}
       ></input>

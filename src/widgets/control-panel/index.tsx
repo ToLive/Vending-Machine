@@ -136,6 +136,7 @@ const ControlPanel = () => {
       <UserInput
         type="input"
         name="money"
+        disabled={selectedProduct ? true : false}
         placeholder="..."
         handler={handleMoneyInsert}
       />
@@ -148,6 +149,7 @@ const ControlPanel = () => {
         type="input"
         name="product"
         placeholder="..."
+        disabled={selectedProduct ? true : false}
         handler={handleProductSelect}
       />
       <div className={classes.footer}>
