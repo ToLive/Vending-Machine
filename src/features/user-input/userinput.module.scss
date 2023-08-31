@@ -1,6 +1,9 @@
 .userinput {
   display: flex;
   justify-content: space-around;
-  height: 2em;
+  height: 3em;
   padding: 0.5em;
+  width: 100%;
+  box-sizing: border-box;
+  line-height: 1.15;
 }

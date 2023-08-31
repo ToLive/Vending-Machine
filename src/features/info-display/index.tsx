@@ -1,13 +1,13 @@
-import { FC } from 'react';
+import { forwardRef } from 'react';
 import { IInfoDisplayProps } from './types';
 import classes from './infodisplay.module.scss';
 
-const InfoDisplay: FC<IInfoDisplayProps> = ({ text, additionalClasses }) => {
+const InfoDisplay = ({ text, additionalClasses }: IInfoDisplayProps, ref) => {
   return (
-    <div className={classes.display}>
+    <div ref={ref} className={classes.display}>
       <span className={`${classes.text} ${additionalClasses}`}>{text}</span>
     </div>
   );
 };
 
-export default InfoDisplay;
+export default forwardRef(InfoDisplay);

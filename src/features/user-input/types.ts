@@ -1,5 +1,8 @@
+import { FormEventHandler } from 'react';
+
 export interface IUserInput {
   type: string;
   placeholder: string;
-  handler?: () => void;
+  handler?: FormEventHandler<HTMLFormElement>;
+  name: string;
 }
