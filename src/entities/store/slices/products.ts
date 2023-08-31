@@ -29,10 +29,14 @@ export const productsSlice = createSlice({
     SET_SELECTED_PRODUCT: (state, action: PayloadAction<number>) => {
       state.selectedProduct = action.payload;
     },
+    REVERT_ALL: (state) => {
+      state.money = 0;
+      state.selectedProduct = 0;
+    },
   },
 });
 
-export const { SET_PRODUCTS, SET_MONEY, SET_SELECTED_PRODUCT } =
+export const { SET_PRODUCTS, SET_MONEY, SET_SELECTED_PRODUCT, REVERT_ALL } =
   productsSlice.actions;
 
 export const getProducts = (state: RootState) => state.products.products;

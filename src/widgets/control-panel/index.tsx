@@ -1,25 +1,63 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import InfoDisplay from '../../features/info-display/index';
 import UserInput from '../../features/user-input';
 import classes from './panel.module.scss';
 import { useAppDispatch, useAppSelector } from '../../entities/store/lib/hooks';
 import {
+  REVERT_ALL,
   SET_MONEY,
+  SET_PRODUCTS,
   SET_SELECTED_PRODUCT,
   getInsertedMoney,
   getProducts,
 } from '../../entities/store/slices/products';
 import { store } from '../../entities/store';
 import { calcChange } from './lib/helpers';
+import { IProductProps } from '../../entities/store/lib/types';
+import Product from '../../features/product';
+import { IChangeType } from './types';
+
+const defaultTexts = {
+  moneyInfo: 'Insert money',
+  productInfo: '/',
+};
+
+const acceptedBanknotes = [50, 100, 200, 500];
+const DISPLAY_TIMEOUT = 2000;
 
 const ControlPanel = () => {
   const dispatch = useAppDispatch();
   const insertedMoney = useAppSelector(getInsertedMoney);
   const products = Object.values(useAppSelector(getProducts));
+  const [selectedProduct, setSelectedProduct] = useState<IProductProps>();
+  const [change, setChange] = useState<IChangeType>({});
 
-  const [moneyInfo, setMoneyInfo] = useState('Insert money');
+  const [moneyInfo, setMoneyInfo] = useState(defaultTexts.moneyInfo);
+  const [productInfo, setProductInfo] = useState(defaultTexts.productInfo);
 
-  const acceptedBanknotes = [50, 100, 200, 500];
+  useEffect(() => {
+    if (insertedMoney === 0) {
+      dispatch(SET_PRODUCTS([]));
+      dispatch(SET_SELECTED_PRODUCT(0));
+
+      setMoneyInfo(defaultTexts.moneyInfo);
+      setProductInfo(defaultTexts.productInfo);
+      setSelectedProduct(undefined);
+      setChange({});
+    }
+  }, [insertedMoney]);
+
+  const changeToText = () => {
+    return Object.entries(change)
+      .reverse()
+      .reduce((acc, [key, value]) => {
+        if (value > 0) {
+          acc += `${key} ₽: ${value} ${value === 1 ? 'coin' : 'coins'}<br/>`;
+        }
+
+        return acc;
+      }, '');
+  };
 
   const handleMoneyInsert = (e: FormEvent) => {
     e.preventDefault();
@@ -28,7 +66,7 @@ const ControlPanel = () => {
 
     const checkInput = (sum: number) => acceptedBanknotes.includes(sum);
 
-    if (!money || !checkInput(money)) {
+    if (!checkInput(money)) {
       setMoneyInfo('Money not accepted');
 
       setTimeout(
@@ -36,9 +74,9 @@ const ControlPanel = () => {
           setMoneyInfo(
             insertedMoney > 0
               ? `Inserted money: ${insertedMoney}`
-              : 'Insert money'
+              : defaultTexts.moneyInfo
           ),
-        2000
+        DISPLAY_TIMEOUT
       );
 
       return;
@@ -46,46 +84,50 @@ const ControlPanel = () => {
 
     dispatch(SET_MONEY(money));
 
-    const state = store.getState();
-    const currentMoney = getInsertedMoney(state);
+    const currentMoney = getInsertedMoney(store.getState());
 
     setMoneyInfo(
-      currentMoney > 0 ? `Inserted money: ${currentMoney}` : 'Insert money'
+      currentMoney > 0
+        ? `Inserted money: ${currentMoney}`
+        : defaultTexts.moneyInfo
     );
+
+    setProductInfo('Choose product');
   };
 
   const handleProductSelect = (e: FormEvent) => {
     e.preventDefault();
 
-    const productNum = Number((e.target as HTMLFormElement).value);
-
-    console.log(productNum);
+    const productNum = Number((e.target as HTMLFormElement).product.value);
 
     const checkInput = (num: number) => num > 0 && num <= products.length;
 
-    if (!productNum || !checkInput(productNum)) {
-      console.log(products);
+    if (!checkInput(productNum)) {
+      setProductInfo('Enter correct product!');
+
+      setTimeout(
+        () => setProductInfo(defaultTexts.productInfo),
+        DISPLAY_TIMEOUT
+      );
 
       return;
     }
 
-    const state = store.getState();
-    const currentMoney = getInsertedMoney(state);
-    const selectedProduct = products[productNum - 1];
+    const currentMoney = getInsertedMoney(store.getState());
+    const product = products[productNum - 1];
 
-    const productPrice = selectedProduct.price;
+    if (product) {
+      const productPrice = product.price;
 
-    if (productPrice <= currentMoney) {
-      dispatch(SET_SELECTED_PRODUCT(productNum));
+      if (productPrice <= currentMoney) {
+        dispatch(SET_SELECTED_PRODUCT(productNum - 1));
+        setSelectedProduct({ ...product, isSelected: true });
 
-      const change = calcChange(currentMoney, productPrice);
+        setProductInfo('Success');
 
-      console.log(change);
-    } else {
-      console.log('You do not have enough money for this product');
+        setChange(calcChange(currentMoney, productPrice));
+      }
     }
-
-    ///console.log('product select handler');
   };
 
   return (
@@ -101,7 +143,7 @@ const ControlPanel = () => {
         Available banknotes: 50, 100, 200 or 500 ₽. The machine gives change in
         1, 2, 5 and 10 ₽ coins.
       </span>
-      <InfoDisplay text="/" />
+      <InfoDisplay text={productInfo} />
       <UserInput
         type="input"
         name="product"
@@ -109,8 +151,10 @@ const ControlPanel = () => {
         handler={handleProductSelect}
       />
       <div className={classes.footer}>
-        <InfoDisplay />
-        <InfoDisplay />
+        <InfoDisplay text={change ? changeToText() : ''} />
+        <InfoDisplay onClick={() => dispatch(REVERT_ALL())}>
+          {selectedProduct && <Product {...selectedProduct} />}
+        </InfoDisplay>
       </div>
     </section>
   );

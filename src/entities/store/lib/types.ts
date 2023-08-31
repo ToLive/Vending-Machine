@@ -4,4 +4,5 @@ export interface IProductProps {
   price: number;
   idx?: number;
   isActive?: boolean;
+  isSelected?: boolean;
 }

@@ -1,16 +1,19 @@
 .display {
   display: flex;
+  flex: 0 1;
   align-items: center;
   justify-content: flex-start;
   background-color: black;
-  color: limegreen;
-  height: 2em;
+  min-height: 2em;
   border-radius: 5px;
   padding: 0.5em;
 
   .text {
     font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    color: limegreen;
     height: 100%;
-    line-height: 170%;
+    line-height: 200%;
+    text-align: left;
   }
 }

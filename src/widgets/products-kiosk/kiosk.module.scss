@@ -1,8 +1,9 @@
 .kiosk {
-  display: flex;
+  display: grid;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(3, 1fr);
   align-content: flex-start;
   gap: 15px;
-  flex-wrap: wrap;
   background-color: #1e1e1e;
   height: 90vh;
   border-radius: 15px;
